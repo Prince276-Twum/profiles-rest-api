@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 # Create your models here.
 
@@ -34,13 +35,15 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     """Database model for user in the system"""
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
+    age = models.IntegerField(null=True, validators=[
+                              MinValueValidator(1), MaxValueValidator(25)])
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
     objects = UserProfileManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["name"]
+    REQUIRED_FIELDS = ["name", "age"]
 
     def get_full_name(self):
         """Retrieves the full name of the user"""

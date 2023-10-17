@@ -3,15 +3,19 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from profiles_api import serializers
-from rest_framework.viewsets import ViewSet
+from rest_framework.viewsets import ViewSet, ModelViewSet
+from profiles_api import models
+from rest_framework.authentication import TokenAuthentication
+from profiles_api import permissions
+
 # Create your views here.
 
 
 class HelloApiView(APIView):
     serializer_class = serializers.HelloSerializer
 
-    def get(self, request, format=None):
-
+    def get(self, request, pk, format=None):
+        print(pk)
         an_apiview = [
             "it uses http method as as a fuction",
             "is similar to tradtion django views",
@@ -79,3 +83,10 @@ class HelloViewset(ViewSet):
     def destroy(self, request, pk=None):
 
         return Response({"http_mettod": "Delete"})
+
+
+class UserProfilViewset(ModelViewSet):
+    serializer_class = serializers.UserProfileSerializer
+    queryset = models.UserProfile.objects.all()
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (permissions.UpdateOwnProfile,)
